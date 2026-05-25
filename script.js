@@ -24,3 +24,10 @@ lightbox.addEventListener('click', (evento) => {
         lightbox.classList.add('lightbox-oculto');
     }
 });
+
+const btnMenu = document.getElementById('btn-menu');
+const menuEnlaces = document.getElementById('menu-enlaces');
+
+btnMenu.addEventListener('click', () => {
+    menuEnlaces.classList.toggle('mostrar');
+});
