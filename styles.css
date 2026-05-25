@@ -1,16 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 :root {
-    --bg-warm: #fcf5f9;       
-    --text-dark: #2c1e30;     
-    --lila-calido: #d094cc;   
-    --accent-orange: #ff764d; 
-    --accent-yellow: #fde075; 
+    --bg-warm: #fcf5f9;        
+    --text-dark: #2c1e30;      
+    --lila-calido: #d094cc;    
+    --accent-orange: #ff764d;  
+    --accent-yellow: #fde075;  
     --vhs-red: rgba(255, 0, 0, 0.8);
     --vhs-cyan: rgba(0, 255, 255, 0.8);
 }
 
- {
+
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -116,9 +117,26 @@ nav {
     background-color: var(--text-dark);
     padding: 15px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.menu-hamburguesa {
+    display: none; /* Oculto en PC */
+    background: transparent;
+    border: none;
+    color: var(--accent-orange);
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.enlaces-nav {
+    display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
+    width: 100%;
 }
 
 nav a {
@@ -160,7 +178,7 @@ nav a:hover {
     margin: 30px 0;
     filter: drop-shadow(6px 6px 0px var(--lila-calido));
     transition: transform 0.3s;
-    max-width: 100%; /* Asegura que la imagen no desborde su contenedor */
+    max-width: 100%;
     height: auto;
 }
 
@@ -206,7 +224,6 @@ footer {
     margin-top: 15px;
 }
 
-
 .retro-form input, 
 .retro-form textarea {
     width: 100%;
@@ -246,36 +263,6 @@ footer {
 }
 
 
-@media (max-width: 600px) {
-    h1 {
-        font-size: 3rem;
-    }
-
-    nav {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    nav a {
-        width: 100%;
-        text-align: center;
-    }
-
-    .container {
-        margin: 20px 10px;
-        padding: 15px;
-    }
-
-    body {
-        font-size: 18px;
-    }
-
-    img, .card {
-        max-width: 100%;
-    }
-}
-
 .card img {
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -298,11 +285,9 @@ footer {
     z-index: 1000; 
 }
 
-
 .lightbox-oculto {
     display: none !important;
 }
-
 
 #imagen-lightbox {
     max-width: 90%;
@@ -310,7 +295,6 @@ footer {
     border: 3px solid #ff8c00;
     box-shadow: 0 0 20px rgba(255, 140, 0, 0.5); 
 }
-
 
 #cerrar-lightbox {
     position: absolute;
@@ -325,4 +309,46 @@ footer {
 
 #cerrar-lightbox:hover {
     color: red;
+}
+
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 3rem;
+    }
+
+   
+    .menu-hamburguesa {
+        display: block; 
+    }
+
+    .enlaces-nav {
+        display: none; 
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .enlaces-nav.mostrar {
+        display: flex;
+    }
+
+    nav a {
+        width: 100%;
+        text-align: center;
+    }
+
+    .container {
+        margin: 20px 10px;
+        padding: 15px;
+    }
+
+    body {
+        font-size: 18px;
+    }
+
+    img, .card {
+        max-width: 100%;
+    }
 }
