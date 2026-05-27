@@ -1,66 +1,468 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reseñas - Fera.DV</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reseñas - Fera.DV</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== SISTEMA DE RESEÑAS ===== */
+    .resenas-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .promedio-badge {
+      background-color: var(--text-dark);
+      color: var(--accent-yellow);
+      padding: 6px 14px;
+      font-size: 1.5rem;
+      border: 2px solid var(--accent-yellow);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .promedio-badge .estrellas-display {
+      color: var(--accent-yellow);
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+    }
+
+    .promedio-badge .sin-resenas {
+      color: var(--lila-calido);
+      font-size: 1.2rem;
+    }
+
+    .total-resenas-label {
+      color: var(--lila-calido);
+      font-size: 1.2rem;
+    }
+
+    /* Lista de reseñas existentes */
+    .lista-resenas {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .resena-item {
+      background-color: var(--text-dark);
+      color: var(--bg-warm);
+      padding: 14px 18px;
+      border-left: 4px solid var(--lila-calido);
+      font-size: 1.2rem;
+    }
+
+    .resena-item .resena-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .resena-item .resena-usuario {
+      color: var(--accent-orange);
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .resena-item .resena-estrellas {
+      color: var(--accent-yellow);
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+    }
+
+    .resena-item .resena-fecha {
+      color: var(--lila-calido);
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    .resena-item .resena-texto {
+      color: var(--bg-warm);
+      margin-top: 4px;
+    }
+
+    .sin-resenas-msg {
+      color: var(--lila-calido);
+      font-size: 1.2rem;
+      font-style: italic;
+    }
+
+    /* Formulario de nueva reseña */
+    .form-resena {
+      margin-top: 20px;
+      border-top: 2px dashed var(--lila-calido);
+      padding-top: 18px;
+    }
+
+    .form-resena h4 {
+      color: var(--accent-orange);
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .form-resena .campo {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-resena label {
+      color: var(--lila-calido);
+      font-size: 1.2rem;
+    }
+
+    .form-resena input[type="text"],
+    .form-resena textarea {
+      background-color: var(--text-dark);
+      color: var(--bg-warm);
+      border: 2px solid var(--lila-calido);
+      padding: 8px 12px;
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+      width: 100%;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-resena input[type="text"]:focus,
+    .form-resena textarea:focus {
+      border-color: var(--accent-orange);
+    }
+
+    /* Selector de estrellas interactivo */
+    .star-selector {
+      display: flex;
+      gap: 6px;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+
+    .star-selector input[type="radio"] {
+      display: none;
+    }
+
+    .star-selector label {
+      font-size: 2.2rem;
+      color: var(--lila-calido);
+      cursor: pointer;
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    .star-selector label:hover,
+    .star-selector label:hover ~ label,
+    .star-selector input[type="radio"]:checked ~ label {
+      color: var(--accent-yellow);
+    }
+
+    .star-selector label:hover {
+      transform: scale(1.2);
+    }
+
+    .form-resena .btn-enviar {
+      background-color: var(--accent-orange);
+      color: var(--text-dark);
+      border: none;
+      padding: 10px 24px;
+      font-family: 'VT323', monospace;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background-color 0.2s, transform 0.1s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .form-resena .btn-enviar:hover {
+      background-color: var(--accent-yellow);
+      transform: translateY(-2px);
+    }
+
+    .form-resena .btn-enviar:active {
+      transform: translateY(0);
+    }
+
+    .msg-exito {
+      color: #5dbb63;
+      font-size: 1.3rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .msg-error {
+      color: #ff4d4d;
+      font-size: 1.2rem;
+      margin-top: 6px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <h1>Fera.DV</h1>
-    <nav>
-         <button id="btn-menu" class="menu-hamburguesa">★</button>
-        <div id="menu-enlaces" class="enlaces-nav">
-        <a href="index.html">Inicio</a>
-        <a href="reseñas.html">Reseñas</a>
-        <a href="galeria.html">Galería</a>
-        <a href="guias.html">Guías</a>
-        <a href="acerca.html">Acerca de</a>
-        <a href="contacto.html">Contacto</a>
-        </div>    
-    </nav>
+  <h1>Fera.DV</h1>
+  <nav>
+    <button id="btn-menu" class="menu-hamburguesa">★</button>
+    <div id="menu-enlaces" class="enlaces-nav">
+      <a href="index.html">Inicio</a>
+      <a href="reseñas.html">Reseñas</a>
+      <a href="galeria.html">Galería</a>
+      <a href="guias.html">Guías</a>
+      <a href="acerca.html">Acerca de</a>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </nav>
 </header>
 
 <main class="container">
-    <h2>Reseñas de Equipos</h2>
+  <h2>Reseñas de Equipos</h2>
 
-    <section class="card">
-        <h3>Sony Handycam DCR-SX45</h3>
-        <img src="sonydcr45.png" alt="Sony Handycam DCR-SX45" class="sin-fondo" width="250">
-        <p>Una videocámara clásica con gran estabilidad y calidad SD. Su formato compacto la hace ideal para llevar a todas partes y documentar tu día a día con ese look retro.</p>
-    </section>
+  <!-- CÁMARA 1: Sony Handycam DCR-SX45 -->
+  <section class="card" data-id="camara_1">
+    <h3>Sony Handycam DCR-SX45</h3>
+    <img src="sonydcr45.png" alt="Sony Handycam DCR-SX45" class="sin-fondo" width="250">
+    <p>Una videocámara clásica con gran estabilidad y calidad SD. Su formato compacto la hace ideal para llevar a todas partes y documentar tu día a día con ese look retro.</p>
 
-    <section class="card">
-        <h3>Canon PowerShot A480</h3>
-        <img src="canonp480.png" alt="Canon PowerShot A480" class="sin-fondo" width="250">
-        <p>Compacta, sencilla y perfecta para fotografía casual. Sus sensores CCD logran unos colores con esa saturación nostálgica inconfundible de los 2000s.</p>
-    </section>
+    <div class="resenas-header">
+      <div class="promedio-badge" id="badge-camara_1">
+        <span class="sin-resenas">Sin reseñas aún</span>
+      </div>
+      <span class="total-resenas-label" id="total-camara_1"></span>
+    </div>
 
-    <section class="card">
-        <h3>Nikon Coolpix 2500</h3>
-        <img src="1200.png" alt="Nikon Coolpix 2500" class="sin-fondo" width="250">
-        <p>Una joya del año 2002 con un diseño icónico de lente giratorio. Revolucionó la forma de tomar autorretratos mucho antes de que existiera la palabra "selfie".</p>
-    </section>
+    <div class="lista-resenas" id="lista-camara_1"></div>
 
-    <section class="card">
-        <h3>JVC Everio GZ-MG330</h3>
-        <img src="jvc.png" alt="JVC Everio GZ-MG330" class="sin-fondo" width="250">
-        <p>Una de las primeras handycams en popularizar el disco duro interno. Perfecta para horas de grabación con ese inconfundible "ruido" de video digital temprano.</p>
-    </section>
+    <div class="form-resena">
+      <h4>Deja tu reseña</h4>
+      <div class="campo">
+        <label>Tu nombre de usuario:</label>
+        <input type="text" id="usuario-camara_1" placeholder="Ej: CinéfiloRetro" maxlength="30">
+      </div>
+      <div class="campo">
+        <label>Calificación:</label>
+        <div class="star-selector" id="stars-camara_1">
+          <input type="radio" name="stars-camara_1" id="s5-camara_1" value="5">
+          <label for="s5-camara_1">★</label>
+          <input type="radio" name="stars-camara_1" id="s4-camara_1" value="4">
+          <label for="s4-camara_1">★</label>
+          <input type="radio" name="stars-camara_1" id="s3-camara_1" value="3">
+          <label for="s3-camara_1">★</label>
+          <input type="radio" name="stars-camara_1" id="s2-camara_1" value="2">
+          <label for="s2-camara_1">★</label>
+          <input type="radio" name="stars-camara_1" id="s1-camara_1" value="1">
+          <label for="s1-camara_1">★</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Tu opinión:</label>
+        <textarea id="texto-camara_1" rows="3" placeholder="Escribe tu experiencia con esta cámara..." maxlength="500"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarResena('camara_1')">Publicar Reseña</button>
+      <p class="msg-exito" id="exito-camara_1">✔ ¡Reseña publicada con éxito!</p>
+      <p class="msg-error" id="error-camara_1">⚠ Por favor completa todos los campos y selecciona una calificación.</p>
+    </div>
+  </section>
 
-    <section class="card">
-        <h3>Sony Cyber-shot DSC-T7</h3>
-        <img src="sonia.png" alt="Sony Cyber-shot DSC-T7" class="sin-fondo" width="250">
-        <p>Ultradelgada, con tapa frontal deslizante y cuerpo de metal. Es la definición perfecta de la estética tecnológica, futurista y elegante de mediados de la década.</p>
-    </section>
+  <!-- CÁMARA 2: Canon PowerShot A480 -->
+  <section class="card" data-id="camara_2">
+    <h3>Canon PowerShot A480</h3>
+    <img src="canonp480.png" alt="Canon PowerShot A480" class="sin-fondo" width="250">
+    <p>Compacta, sencilla y perfecta para fotografía casual. Sus sensores CCD logran unos colores con esa saturación nostálgica inconfundible de los 2000s.</p>
+
+    <div class="resenas-header">
+      <div class="promedio-badge" id="badge-camara_2">
+        <span class="sin-resenas">Sin reseñas aún</span>
+      </div>
+      <span class="total-resenas-label" id="total-camara_2"></span>
+    </div>
+
+    <div class="lista-resenas" id="lista-camara_2"></div>
+
+    <div class="form-resena">
+      <h4>Deja tu reseña</h4>
+      <div class="campo">
+        <label>Tu nombre de usuario:</label>
+        <input type="text" id="usuario-camara_2" placeholder="Ej: FotoAmateur" maxlength="30">
+      </div>
+      <div class="campo">
+        <label>Calificación:</label>
+        <div class="star-selector" id="stars-camara_2">
+          <input type="radio" name="stars-camara_2" id="s5-camara_2" value="5">
+          <label for="s5-camara_2">★</label>
+          <input type="radio" name="stars-camara_2" id="s4-camara_2" value="4">
+          <label for="s4-camara_2">★</label>
+          <input type="radio" name="stars-camara_2" id="s3-camara_2" value="3">
+          <label for="s3-camara_2">★</label>
+          <input type="radio" name="stars-camara_2" id="s2-camara_2" value="2">
+          <label for="s2-camara_2">★</label>
+          <input type="radio" name="stars-camara_2" id="s1-camara_2" value="1">
+          <label for="s1-camara_2">★</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Tu opinión:</label>
+        <textarea id="texto-camara_2" rows="3" placeholder="Escribe tu experiencia con esta cámara..." maxlength="500"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarResena('camara_2')">Publicar Reseña</button>
+      <p class="msg-exito" id="exito-camara_2">✔ ¡Reseña publicada con éxito!</p>
+      <p class="msg-error" id="error-camara_2">⚠ Por favor completa todos los campos y selecciona una calificación.</p>
+    </div>
+  </section>
+
+  <!-- CÁMARA 3: Nikon Coolpix 2500 -->
+  <section class="card" data-id="camara_3">
+    <h3>Nikon Coolpix 2500</h3>
+    <img src="1200.png" alt="Nikon Coolpix 2500" class="sin-fondo" width="250">
+    <p>Una joya del año 2002 con un diseño icónico de lente giratorio. Revolucionó la forma de tomar autorretratos mucho antes de que existiera la palabra "selfie".</p>
+
+    <div class="resenas-header">
+      <div class="promedio-badge" id="badge-camara_3">
+        <span class="sin-resenas">Sin reseñas aún</span>
+      </div>
+      <span class="total-resenas-label" id="total-camara_3"></span>
+    </div>
+
+    <div class="lista-resenas" id="lista-camara_3"></div>
+
+    <div class="form-resena">
+      <h4>Deja tu reseña</h4>
+      <div class="campo">
+        <label>Tu nombre de usuario:</label>
+        <input type="text" id="usuario-camara_3" placeholder="Ej: NikonFan2002" maxlength="30">
+      </div>
+      <div class="campo">
+        <label>Calificación:</label>
+        <div class="star-selector" id="stars-camara_3">
+          <input type="radio" name="stars-camara_3" id="s5-camara_3" value="5">
+          <label for="s5-camara_3">★</label>
+          <input type="radio" name="stars-camara_3" id="s4-camara_3" value="4">
+          <label for="s4-camara_3">★</label>
+          <input type="radio" name="stars-camara_3" id="s3-camara_3" value="3">
+          <label for="s3-camara_3">★</label>
+          <input type="radio" name="stars-camara_3" id="s2-camara_3" value="2">
+          <label for="s2-camara_3">★</label>
+          <input type="radio" name="stars-camara_3" id="s1-camara_3" value="1">
+          <label for="s1-camara_3">★</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Tu opinión:</label>
+        <textarea id="texto-camara_3" rows="3" placeholder="Escribe tu experiencia con esta cámara..." maxlength="500"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarResena('camara_3')">Publicar Reseña</button>
+      <p class="msg-exito" id="exito-camara_3">✔ ¡Reseña publicada con éxito!</p>
+      <p class="msg-error" id="error-camara_3">⚠ Por favor completa todos los campos y selecciona una calificación.</p>
+    </div>
+  </section>
+
+  <!-- CÁMARA 4: JVC Everio GZ-MG330 -->
+  <section class="card" data-id="camara_4">
+    <h3>JVC Everio GZ-MG330</h3>
+    <img src="jvc.png" alt="JVC Everio GZ-MG330" class="sin-fondo" width="250">
+    <p>Una de las primeras handycams en popularizar el disco duro interno. Perfecta para horas de grabación con ese inconfundible "ruido" de video digital temprano.</p>
+
+    <div class="resenas-header">
+      <div class="promedio-badge" id="badge-camara_4">
+        <span class="sin-resenas">Sin reseñas aún</span>
+      </div>
+      <span class="total-resenas-label" id="total-camara_4"></span>
+    </div>
+
+    <div class="lista-resenas" id="lista-camara_4"></div>
+
+    <div class="form-resena">
+      <h4>Deja tu reseña</h4>
+      <div class="campo">
+        <label>Tu nombre de usuario:</label>
+        <input type="text" id="usuario-camara_4" placeholder="Ej: VideoRetro" maxlength="30">
+      </div>
+      <div class="campo">
+        <label>Calificación:</label>
+        <div class="star-selector" id="stars-camara_4">
+          <input type="radio" name="stars-camara_4" id="s5-camara_4" value="5">
+          <label for="s5-camara_4">★</label>
+          <input type="radio" name="stars-camara_4" id="s4-camara_4" value="4">
+          <label for="s4-camara_4">★</label>
+          <input type="radio" name="stars-camara_4" id="s3-camara_4" value="3">
+          <label for="s3-camara_4">★</label>
+          <input type="radio" name="stars-camara_4" id="s2-camara_4" value="2">
+          <label for="s2-camara_4">★</label>
+          <input type="radio" name="stars-camara_4" id="s1-camara_4" value="1">
+          <label for="s1-camara_4">★</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Tu opinión:</label>
+        <textarea id="texto-camara_4" rows="3" placeholder="Escribe tu experiencia con esta cámara..." maxlength="500"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarResena('camara_4')">Publicar Reseña</button>
+      <p class="msg-exito" id="exito-camara_4">✔ ¡Reseña publicada con éxito!</p>
+      <p class="msg-error" id="error-camara_4">⚠ Por favor completa todos los campos y selecciona una calificación.</p>
+    </div>
+  </section>
+
+  <!-- CÁMARA 5: Sony Cyber-shot DSC-T7 -->
+  <section class="card" data-id="camara_5">
+    <h3>Sony Cyber-shot DSC-T7</h3>
+    <img src="sonia.png" alt="Sony Cyber-shot DSC-T7" class="sin-fondo" width="250">
+    <p>Ultradelgada, con tapa frontal deslizante y cuerpo de metal. Es la definición perfecta de la estética tecnológica, futurista y elegante de mediados de la década.</p>
+
+    <div class="resenas-header">
+      <div class="promedio-badge" id="badge-camara_5">
+        <span class="sin-resenas">Sin reseñas aún</span>
+      </div>
+      <span class="total-resenas-label" id="total-camara_5"></span>
+    </div>
+
+    <div class="lista-resenas" id="lista-camara_5"></div>
+
+    <div class="form-resena">
+      <h4>Deja tu reseña</h4>
+      <div class="campo">
+        <label>Tu nombre de usuario:</label>
+        <input type="text" id="usuario-camara_5" placeholder="Ej: SonyLover" maxlength="30">
+      </div>
+      <div class="campo">
+        <label>Calificación:</label>
+        <div class="star-selector" id="stars-camara_5">
+          <input type="radio" name="stars-camara_5" id="s5-camara_5" value="5">
+          <label for="s5-camara_5">★</label>
+          <input type="radio" name="stars-camara_5" id="s4-camara_5" value="4">
+          <label for="s4-camara_5">★</label>
+          <input type="radio" name="stars-camara_5" id="s3-camara_5" value="3">
+          <label for="s3-camara_5">★</label>
+          <input type="radio" name="stars-camara_5" id="s2-camara_5" value="2">
+          <label for="s2-camara_5">★</label>
+          <input type="radio" name="stars-camara_5" id="s1-camara_5" value="1">
+          <label for="s1-camara_5">★</label>
+        </div>
+      </div>
+      <div class="campo">
+        <label>Tu opinión:</label>
+        <textarea id="texto-camara_5" rows="3" placeholder="Escribe tu experiencia con esta cámara..." maxlength="500"></textarea>
+      </div>
+      <button class="btn-enviar" onclick="enviarResena('camara_5')">Publicar Reseña</button>
+      <p class="msg-exito" id="exito-camara_5">✔ ¡Reseña publicada con éxito!</p>
+      <p class="msg-error" id="error-camara_5">⚠ Por favor completa todos los campos y selecciona una calificación.</p>
+    </div>
+  </section>
 
 </main>
 
 <footer>
-    <p>© 2026 Fera.DV</p>
+  <p>© 2026 Fera.DV</p>
 </footer>
+
 <script src="script.js"></script>
 </body>
 </html>
