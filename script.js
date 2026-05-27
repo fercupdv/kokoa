@@ -1,5 +1,5 @@
 // ============================================================
-// Fera.DV — script.js
+// Fera.DV — script.js (CORREGIDO)
 // Sistema de Reseñas con Base de Datos en localStorage
 // Estructura de datos:
 //   localStorage["resenas_camara_X"] = JSON.stringify([
@@ -7,14 +7,15 @@
 //   ])
 // ============================================================
 
-// ─── Menú hamburguesa (código original) ─────────────────────
+// ─── Menú hamburguesa (CORREGIDO) ──────────────────────────
+// CAMBIO: Usar 'mostrar' en lugar de 'activo' para coincidir con CSS
 document.addEventListener('DOMContentLoaded', function () {
   const btnMenu = document.getElementById('btn-menu');
   const menuEnlaces = document.getElementById('menu-enlaces');
 
   if (btnMenu && menuEnlaces) {
     btnMenu.addEventListener('click', function () {
-      menuEnlaces.classList.toggle('activo');
+      menuEnlaces.classList.toggle('mostrar');  // ← CORREGIDO: era 'activo'
     });
   }
 
