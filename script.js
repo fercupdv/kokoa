@@ -1,6 +1,6 @@
 // ============================================================
-// Fera.DV — script.js (CORREGIDO PARA GITHUB PAGES)
-// Sistema de Reseñas con Firebase Firestore
+// Fera.DV — script.js (UNIFICADO)
+// Sistema de Reseñas con Firebase + Galería Lightbox
 // ============================================================
 
 // Esperar a que Firebase esté disponible globalmente
@@ -29,6 +29,44 @@ try {
   console.error("✗ Error al inicializar Firebase:", error);
 }
 
+// ─── GALERÍA LIGHTBOX ───────────────────────────────────────
+
+/**
+ * Inicializa el sistema de galería lightbox.
+ * Permite hacer clic en imágenes para ampliarlas y cerrarlas con un botón o clic exterior.
+ */
+function inicializarGaleria() {
+  const imagenesGaleria = document.querySelectorAll('.card img');
+  const lightbox = document.getElementById('lightbox');
+  const imagenLightbox = document.getElementById('imagen-lightbox');
+  const botonCerrar = document.getElementById('cerrar-lightbox');
+
+  if (!lightbox || !imagenLightbox || !botonCerrar) {
+    console.warn("Elementos de lightbox no encontrados en el HTML");
+    return;
+  }
+
+  // Abrir lightbox al hacer clic en una imagen
+  imagenesGaleria.forEach(function (imagen) {
+    imagen.addEventListener('click', function () {
+      imagenLightbox.src = imagen.src;
+      lightbox.classList.remove('lightbox-oculto');
+    });
+  });
+
+  // Cerrar lightbox con el botón X
+  botonCerrar.addEventListener('click', function () {
+    lightbox.classList.add('lightbox-oculto');
+  });
+
+  // Cerrar lightbox al hacer clic fuera de la imagen
+  lightbox.addEventListener('click', function (evento) {
+    if (evento.target === lightbox) {
+      lightbox.classList.add('lightbox-oculto');
+    }
+  });
+}
+
 // ─── Menú hamburguesa ───────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function () {
   const btnMenu = document.getElementById("btn-menu");
@@ -39,6 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
       menuEnlaces.classList.toggle("mostrar");
     });
   }
+
+  // Inicializar galería
+  inicializarGaleria();
 
   // Inicializar el sistema de reseñas para todas las cámaras
   const camaras = ["camara_1", "camara_2", "camara_3", "camara_4", "camara_5"];
