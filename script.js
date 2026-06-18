@@ -1,14 +1,9 @@
-// ============================================================
-// Fera.DV — script.js (UNIFICADO)
-// Sistema de Reseñas con Firebase + Galería Lightbox
-// ============================================================
 
-// Esperar a que Firebase esté disponible globalmente
 if (typeof firebase === 'undefined') {
   console.error('Firebase no está cargado. Verifica que el script de Firebase esté en el HTML.');
 }
 
-// ─── Inicialización de Firebase ─────────────────────────────
+
 const firebaseConfig = {
   apiKey: "AIzaSyBJ1aFZ-kq5lD9_UXQ9ZVDTfLm7TNGu1W4",
   authDomain: "kokoa-res.firebaseapp.com",
@@ -19,7 +14,7 @@ const firebaseConfig = {
   measurementId: "G-X2F40DBVWC"
 };
 
-// Inicializa Firebase
+
 let db;
 try {
   firebase.initializeApp(firebaseConfig);
@@ -29,12 +24,6 @@ try {
   console.error("✗ Error al inicializar Firebase:", error);
 }
 
-// ─── GALERÍA LIGHTBOX ───────────────────────────────────────
-
-/**
- * Inicializa el sistema de galería lightbox.
- * Permite hacer clic en imágenes para ampliarlas y cerrarlas con un botón o clic exterior.
- */
 function inicializarGaleria() {
   const imagenesGaleria = document.querySelectorAll('.card img');
   const lightbox = document.getElementById('lightbox');
@@ -46,7 +35,7 @@ function inicializarGaleria() {
     return;
   }
 
-  // Abrir lightbox al hacer clic en una imagen
+  
   imagenesGaleria.forEach(function (imagen) {
     imagen.addEventListener('click', function () {
       imagenLightbox.src = imagen.src;
@@ -54,12 +43,12 @@ function inicializarGaleria() {
     });
   });
 
-  // Cerrar lightbox con el botón X
+  
   botonCerrar.addEventListener('click', function () {
     lightbox.classList.add('lightbox-oculto');
   });
 
-  // Cerrar lightbox al hacer clic fuera de la imagen
+  
   lightbox.addEventListener('click', function (evento) {
     if (evento.target === lightbox) {
       lightbox.classList.add('lightbox-oculto');
@@ -67,7 +56,7 @@ function inicializarGaleria() {
   });
 }
 
-// ─── Menú hamburguesa ───────────────────────────────────────
+
 document.addEventListener("DOMContentLoaded", function () {
   const btnMenu = document.getElementById("btn-menu");
   const menuEnlaces = document.getElementById("menu-enlaces");
@@ -78,10 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Inicializar galería
+
   inicializarGaleria();
 
-  // Inicializar el sistema de reseñas para todas las cámaras
+  
   const camaras = ["camara_1", "camara_2", "camara_3", "camara_4", "camara_5"];
   camaras.forEach(function (idCamara) {
     if (document.getElementById("lista-" + idCamara)) {
@@ -90,11 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-// ─── BASE DE DATOS (Firebase Firestore) ─────────────────────
 
-/**
- * Escucha cambios en las reseñas de una cámara en Firestore y las renderiza.
- */
 function escucharResenas(idCamara) {
   if (!db) {
     console.error("Firebase no está disponible para:", idCamara);
@@ -122,9 +107,7 @@ function escucharResenas(idCamara) {
   }
 }
 
-/**
- * Agrega una nueva reseña a Firestore.
- */
+
 function agregarResena(idCamara, usuario, calificacion, texto) {
   if (!db) {
     console.error("Firebase no está disponible");
@@ -148,9 +131,7 @@ function agregarResena(idCamara, usuario, calificacion, texto) {
     });
 }
 
-/**
- * Calcula el promedio de calificaciones.
- */
+
 function calcularPromedio(resenas) {
   if (resenas.length === 0) return 0;
   const suma = resenas.reduce(function (acc, r) {
@@ -159,11 +140,7 @@ function calcularPromedio(resenas) {
   return Math.round((suma / resenas.length) * 10) / 10;
 }
 
-// ─── RENDERIZADO ─────────────────────────────────────────────
 
-/**
- * Genera una cadena de estrellas visuales.
- */
 function generarEstrellas(calificacion) {
   let resultado = "";
   for (let i = 1; i <= 5; i++) {
@@ -172,13 +149,11 @@ function generarEstrellas(calificacion) {
   return resultado;
 }
 
-/**
- * Renderiza el badge de promedio y la lista de reseñas.
- */
+
 function renderizarResenas(idCamara, resenas) {
   const promedio = calcularPromedio(resenas);
 
-  // Actualizar badge
+ 
   const badge = document.getElementById("badge-" + idCamara);
   const totalLabel = document.getElementById("total-" + idCamara);
 
@@ -198,7 +173,6 @@ function renderizarResenas(idCamara, resenas) {
       : "";
   }
 
-  // Renderizar lista
   const lista = document.getElementById("lista-" + idCamara);
   if (!lista) return;
 
@@ -230,11 +204,7 @@ function renderizarResenas(idCamara, resenas) {
   lista.innerHTML = html;
 }
 
-// ─── ENVÍO DEL FORMULARIO ────────────────────────────────────
 
-/**
- * Maneja el envío de una nueva reseña.
- */
 window.enviarResena = async function (idCamara) {
   const usuarioInput = document.getElementById("usuario-" + idCamara);
   const textoInput = document.getElementById("texto-" + idCamara);
@@ -252,24 +222,23 @@ window.enviarResena = async function (idCamara) {
   if (msgExito) msgExito.style.display = "none";
   if (msgError) msgError.style.display = "none";
 
-  // Validación
   if (!usuario || !texto || calificacion < 1) {
     if (msgError) msgError.style.display = "block";
     return;
   }
 
   try {
-    // Guardar en Firebase
+    
     await agregarResena(idCamara, usuario, calificacion, texto);
 
-    // Limpiar formulario
+    
     if (usuarioInput) usuarioInput.value = "";
     if (textoInput) textoInput.value = "";
     document.querySelectorAll('input[name="stars-' + idCamara + '"]').forEach(function (radio) {
       radio.checked = false;
     });
 
-    // Mostrar éxito
+   
     if (msgExito) {
       msgExito.style.display = "block";
       setTimeout(function () {
@@ -285,11 +254,7 @@ window.enviarResena = async function (idCamara) {
   }
 };
 
-// ─── UTILIDADES ──────────────────────────────────────────────
 
-/**
- * Escapa caracteres HTML.
- */
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, "&amp;")
